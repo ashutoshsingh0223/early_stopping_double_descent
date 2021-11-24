@@ -77,6 +77,6 @@
   "pretrained": false,
   "details": "scaling the learning rate decays across different layers",
   "seed": null,
-  "gpu": 2,
+  "gpu": null,
   "distributed": false
 }

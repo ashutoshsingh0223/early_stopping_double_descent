@@ -30,3 +30,4 @@ Thumbs.db
 **/*.md
 **/*Copy*.ipynb
 **/*draft*
+**/.idea

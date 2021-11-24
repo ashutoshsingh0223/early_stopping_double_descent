@@ -2,6 +2,7 @@
 ## Based on https://myrtle.ai/learn/how-to-train-your-resnet-4-architecture/
 
 import torch.nn as nn
+
 class Flatten(nn.Module):
     def forward(self, x): return x.view(x.size(0), x.size(1))
 
