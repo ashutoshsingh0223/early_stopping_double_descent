@@ -102,7 +102,7 @@ def main_worker(gpu, ngpus_per_node, args):
 
     if args.initial_lr:
         param_setup = [{'params': cur_lay.parameters()}
-                       for i, cur_lay in enumerate(model)
+                       for i, cur_lay in enumerate(model.module)
                        if 'weight' in dir(cur_lay)]
         optimizer = torch.optim.SGD(param_setup, args.lr,
                                     momentum=args.momentum,
@@ -252,7 +252,7 @@ def main_worker(gpu, ngpus_per_node, args):
 
     # TODO: tracking weights of the model
     if args.track_weights:
-        layer_idx = [i for i, cl in enumerate(model) if 'weight' in dir(cl)]
+        layer_idx = [i for i, cl in enumerate(model.module) if 'weight' in dir(cl)]
         cur_weights = get_weights(model, layer_idx)
         if args.track_weights == 'filters':
             filter_w_file = args.outpath / 'filter_weights.pickle'
@@ -288,12 +288,12 @@ def main_worker(gpu, ngpus_per_node, args):
         param_setup = [{'params': cur_lay.parameters(), 'lr': opt_lr_dict[str(i)]}
                        if (str(i) in opt_lr_dict)
                        else {'params': cur_lay.parameters()}
-                       for i, cur_lay in enumerate(model)
+                       for i, cur_lay in enumerate(model.module)
                        if 'weight' in dir(cur_lay)]
         args.initial_lr = [{'lr': opt_lr_dict[str(i)]}
                            if (str(i) in opt_lr_dict)
                            else {'lr': args.lr}
-                           for i, cur_lay in enumerate(model)
+                           for i, cur_lay in enumerate(model.module)
                            if 'weight' in dir(cur_lay)]
         optimizer = torch.optim.SGD(param_setup, args.lr,
                                     momentum=args.momentum,
