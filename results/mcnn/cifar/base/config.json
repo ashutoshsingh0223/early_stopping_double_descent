@@ -2,6 +2,7 @@
   "root": "./datasets",
   "workers": 4,
   "epochs": 6000,
+  "secure_checkpoint": true,
   "start_epoch": 0,
   "batch_size": 128,
   "lr": 0.1,
@@ -24,6 +25,7 @@
   "schedule_lr": false,
   "max_lr_adjusting_epoch": 0,
   "use_inverse_sqrt_lr": true,
+  "decay_max_epochs": 0,
   "use_Adam": false,
   "use_LBFGS": false,
   "evaluate": false,
@@ -32,6 +34,6 @@
   "randomflip": true,
   "pretrained": false,
   "seed": null,
-  "gpu": 0,
+  "gpu": null,
   "distributed": false
 }
