@@ -35,9 +35,9 @@ parser.add_argument('-c', '--config', type=str, default='', metavar='FILE',
 parser = argparse.ArgumentParser(description='CLI parameters for training')
 parser.add_argument('--root', type=str, default='', metavar='DIR',
                     help='Root directory')
-parser.add_argument('-t', '--iterations', type=int, default=1e4, metavar='ITERATIONS'
+parser.add_argument('-t', '--iterations', type=int, default=1e4, metavar='ITERATIONS',
                     help='Iterations (default: 1e4)')
-parser.add_argument('-n', '--samples', type=int, default=100, metavar='N'
+parser.add_argument('-n', '--samples', type=int, default=100, metavar='N',
                     help='Number of samples (default: 100)')
 parser.add_argument('--print-freq', type=int, default=1000,
                     help='CLI output printing frequency (default: 1000)')
@@ -45,9 +45,9 @@ parser.add_argument('--gpu', type=int, default=None,
                     help='Number of GPUS to use')
 parser.add_argument('--seed', type=int, default=None,
                     help='Random seed')                        
-parser.add_argument('-d', , '--dim', type=int, default=50, metavar='DIMENSION'
+parser.add_argument('-d', '--dim', type=int, default=50, metavar='DIMENSION',
                     help='Feature dimension (default: 50)')
-parser.add_argument('--hidden', type=int, default=200, metavar='DIMENSION'
+parser.add_argument('--hidden', type=int, default=200, metavar='DIMENSION',
                     help='Hidden layer dimension (default: 200)')
 # parser.add_argument('--opt', default='sgd', type=str, metavar='OPTIMIZER',
 #                     help='Optimizer (default: "sgd")')
