@@ -1,0 +1,100 @@
+{
+  "root": "datasets",
+  "main": "cifar.npz",
+  "test": "cifar.npz",
+  "sub": "",
+  "epochs": 4000,
+  "start_epoch": 0,
+  "batch_size": 128,
+  "print_freq": 1000,
+  "workers": 4,
+  "secure_checkpoint": true,
+  "gpu": null,
+  "seed": null,
+  "model": "mcnn",
+  "pretrained": false,
+  "model_config": {
+    "num_planes": 64
+  },
+  "num_planes": 64,
+  "layer_names": false,
+  "opt": "sgd",
+  "loss": "cross_entropy",
+  "momentum": 0,
+  "weight_decay": 0,
+  "lr": 0.1,
+  "decay_rate": 0.1,
+  "decay_epochs": 30,
+  "decay_max_epochs": 0,
+  "use_inverse_sqrt_lr": true,
+  "inverse_rate": 512.0,
+  "schedule_lr": false,
+  "norandomcrop": false,
+  "norandomflip": false,
+  "train_size": 0,
+  "compute_variance": false,
+  "trials": 0,
+  "split": 0,
+  "trial_file": "",
+  "select_classes": [],
+  "num_classes": 10,
+  "inject_noise": 0.2,
+  "evaluate": false,
+  "resume": "",
+  "track_correct": false,
+  "scale_lr": {
+    "17": 0.0001
+  },
+  "initial_lr": [
+    {
+      "lr": 0.1
+    },
+    {
+      "lr": 0.1
+    },
+    {
+      "lr": 0.1
+    },
+    {
+      "lr": 0.1
+    },
+    {
+      "lr": 0.1
+    },
+    {
+      "lr": 0.1
+    },
+    {
+      "lr": 0.1
+    },
+    {
+      "lr": 0.1
+    },
+    {
+      "lr": 0.0001
+    }
+  ],
+  "scale_weights": false,
+  "initial_lr_decay": [],
+  "compute_jacobian": false,
+  "compute_jacobian_svd": false,
+  "average_batches": false,
+  "track_weights": false,
+  "details": "s c a l i n g   t h e   l e a r n i n g   r a t e   d e c a y s   a c r o s s   d i f f e r e n t   l a y e r s",
+  "lrdecay": 0.1,
+  "main_file": "cifar.npz",
+  "sub_file": null,
+  "test_file": "cifar.npz",
+  "select_class_list": [],
+  "mix_cifar": false,
+  "mix_rate": 0.04,
+  "max_lr_adjusting_epoch": 0,
+  "loss_func": "cross_entropy",
+  "use_Adam": false,
+  "use_LBFGS": false,
+  "randomcrop": true,
+  "randomflip": true,
+  "distributed": false,
+  "outpath": "/home/stud36/early_stopping_double_descent/results/mcnn/cifar/2021-11-25-11-40-18",
+  "kmax": 5
+}

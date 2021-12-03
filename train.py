@@ -101,9 +101,15 @@ def main_worker(gpu, ngpus_per_node, args):
         raise ValueError('Incorrect optimizer selection {}'.format(args.opt))
 
     if args.initial_lr:
-        param_setup = [{'params': cur_lay.parameters()}
-                       for i, cur_lay in enumerate(model.module)
-                       if 'weight' in dir(cur_lay)]
+        if isinstance(mode, torch.nn.DataParallel):
+            param_setup = [{'params': cur_lay.parameters()}
+                           for i, cur_lay in enumerate(model.module)
+                           if 'weight' in dir(cur_lay)]
+        else:
+            param_setup = [{'params': cur_lay.parameters()}
+                           for i, cur_lay in enumerate(model)
+                           if 'weight' in dir(cur_lay)]
+
         optimizer = torch.optim.SGD(param_setup, args.lr,
                                     momentum=args.momentum,
                                     weight_decay=args.weight_decay)
@@ -252,7 +258,11 @@ def main_worker(gpu, ngpus_per_node, args):
 
     # TODO: tracking weights of the model
     if args.track_weights:
-        layer_idx = [i for i, cl in enumerate(model.module) if 'weight' in dir(cl)]
+        if isinstance(model, torch.nn.DataParallel):
+            layer_idx = [i for i, cl in enumerate(model.module) if 'weight' in dir(cl)]
+        else:
+            layer_idx = [i for i, cl in enumerate(model) if 'weight' in dir(cl)]
+
         cur_weights = get_weights(model, layer_idx)
         if args.track_weights == 'filters':
             filter_w_file = args.outpath / 'filter_weights.pickle'
@@ -285,16 +295,29 @@ def main_worker(gpu, ngpus_per_node, args):
 
             opt_lr_dict = get_lr_scales(model, args.lr, scale_dict)
 
-        param_setup = [{'params': cur_lay.parameters(), 'lr': opt_lr_dict[str(i)]}
-                       if (str(i) in opt_lr_dict)
-                       else {'params': cur_lay.parameters()}
-                       for i, cur_lay in enumerate(model.module)
-                       if 'weight' in dir(cur_lay)]
-        args.initial_lr = [{'lr': opt_lr_dict[str(i)]}
+        if isinstance(model, torch.nn.DataParallel):
+            param_setup = [{'params': cur_lay.parameters(), 'lr': opt_lr_dict[str(i)]}
                            if (str(i) in opt_lr_dict)
-                           else {'lr': args.lr}
+                           else {'params': cur_lay.parameters()}
                            for i, cur_lay in enumerate(model.module)
                            if 'weight' in dir(cur_lay)]
+            args.initial_lr = [{'lr': opt_lr_dict[str(i)]}
+                               if (str(i) in opt_lr_dict)
+                               else {'lr': args.lr}
+                               for i, cur_lay in enumerate(model.module)
+                               if 'weight' in dir(cur_lay)]
+        else:
+            param_setup = [{'params': cur_lay.parameters(), 'lr': opt_lr_dict[str(i)]}
+                           if (str(i) in opt_lr_dict)
+                           else {'params': cur_lay.parameters()}
+                           for i, cur_lay in enumerate(model)
+                           if 'weight' in dir(cur_lay)]
+            args.initial_lr = [{'lr': opt_lr_dict[str(i)]}
+                               if (str(i) in opt_lr_dict)
+                               else {'lr': args.lr}
+                               for i, cur_lay in enumerate(model)
+                               if 'weight' in dir(cur_lay)]
+
         optimizer = torch.optim.SGD(param_setup, args.lr,
                                     momentum=args.momentum,
                                     weight_decay=args.weight_decay)

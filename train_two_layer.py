@@ -32,7 +32,7 @@ config_parser = parser = argparse.ArgumentParser(description='Training Config', 
 parser.add_argument('-c', '--config', type=str, default='', metavar='FILE',
                     help='JSON file containing the configuration dictionary')
 
-parser = argparse.ArgumentParser(description='CLI parameters for training')
+parser = argparse.ArgumentParser(description='CLI parameters for training'),
 parser.add_argument('--root', type=str, default='', metavar='DIR',
                     help='Root directory')
 parser.add_argument('-t', '--iterations', type=int, default=1e4, metavar='ITERATIONS',
@@ -161,8 +161,14 @@ for t in range(args.iterations):
 
   # Update the weights using gradient descent. Each parameter is a Tensor, so
   # we can access its data and gradients like we did before.
+
+
+
   with torch.no_grad():
+    i = 0
     for param in model.parameters():
-      param.data -= learning_rate * param.grad
+        param.data -= args.lr[i] * param.grad
+        if not len(param.shape) > 1:
+            i += 1
 
 np.save(args.outpath / 'loss.npy', np.array(losses))
