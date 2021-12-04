@@ -1,7 +1,7 @@
 {
   "root": "./datasets",
   "workers": 4,
-  "epochs": 5,
+  "epochs": 1000,
   "start_epoch": 0,
   "secure_checkpoint": true,
   "batch_size": 128,
@@ -19,7 +19,6 @@
     "num_classes": 10,
     "num_planes": 64
   },
-
   "inject_noise": 0.2,
   "mix_cifar": false,
   "mix_rate": 0.04,

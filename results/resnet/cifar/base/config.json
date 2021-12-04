@@ -1,7 +1,7 @@
 {
   "root": "./datasets",
   "workers": 4,
-  "epochs": 5,
+  "epochs": 1000,
   "start_epoch": 0,
   "secure_checkpoint": true,
   "batch_size": 128,
