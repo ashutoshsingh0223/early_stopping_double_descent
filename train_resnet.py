@@ -751,9 +751,6 @@ if __name__ == "__main__":
                         default=['no', 'details', 'given'],
                         help='details about the experimental setup')
 
-    if model != 'resnet':
-        raise ValueError('Only resnet model is supported for train_resnet script')
-
 
     def _parse_args():
         # Do we have a config file to parse?
@@ -768,9 +765,11 @@ if __name__ == "__main__":
         args = parser.parse_args(remaining)
         return args
 
-
     # set parameters
     args = _parse_args()
+
+    if args.model != 'resnet':
+        raise ValueError('Only resnet model is supported for train_resnet script')
 
     # directories
     args.root = pathlib.Path(args.root) if args.root else pathlib.Path.cwd()

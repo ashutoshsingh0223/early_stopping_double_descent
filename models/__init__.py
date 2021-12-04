@@ -1,2 +1,2 @@
 from . import mcnn
-from resnet import ResNet18
+from .resnet import ResNet18

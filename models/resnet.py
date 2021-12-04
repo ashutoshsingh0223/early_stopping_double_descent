@@ -28,31 +28,31 @@ class BasicBlock(nn.Module):
         return out
 
 
-def get_basic_sequential(in_planes, planes, stride=1):
-    expansion = 1
-    if stride != 1 or in_planes != expansion * planes:
-        basic_sequential = nn.Sequential(
-            nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False),
-            nn.BatchNorm2d(planes),
-            nn.ReLU(),
-            nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(planes),
-            nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion * planes)),
-            nn.ReLU()
-        )
-    else:
-        basic_sequential = nn.Sequential(
-            nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False),
-            nn.BatchNorm2d(planes),
-            nn.ReLU(),
-            nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(planes),
-            nn.Sequential(),
-            nn.ReLU()
-        )
-    return basic_sequential
+# def get_basic_sequential(in_planes, planes, stride=1):
+#     expansion = 1
+#     if stride != 1 or in_planes != expansion * planes:
+#         basic_sequential = nn.Sequential(
+#             nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False),
+#             nn.BatchNorm2d(planes),
+#             nn.ReLU(),
+#             nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False),
+#             nn.BatchNorm2d(planes),
+#             nn.Sequential(
+#                 nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
+#                 nn.BatchNorm2d(self.expansion * planes)),
+#             nn.ReLU()
+#         )
+#     else:
+#         basic_sequential = nn.Sequential(
+#             nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False),
+#             nn.BatchNorm2d(planes),
+#             nn.ReLU(),
+#             nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False),
+#             nn.BatchNorm2d(planes),
+#             nn.Sequential(),
+#             nn.ReLU()
+#         )
+#     return basic_sequential
 
 
 
@@ -157,9 +157,3 @@ class ResNet(nn.Module):
 
 def ResNet18(num_planes=64, num_classes=10):
     return ResNet(BasicBlock, [2, 2, 2, 2], num_planes=num_planes, num_classes=num_classes)
-
-
-model = nn.Sequential(
-    nn.Conv2d(3, num_planes, kernel_size=3, stride=1, padding=1, bias=False),
-    nn.BatchNorm2d(num_planes),
-)
