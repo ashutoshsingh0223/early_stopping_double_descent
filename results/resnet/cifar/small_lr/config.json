@@ -27,6 +27,11 @@
   "decay_max_epochs": 0,
   "max_lr_adjusting_epoch": 0,
   "use_inverse_sqrt_lr": true,
+  "scale_lr": {
+    "layer3": 0.05,
+    "layer4": 0.05,
+    "linear": 0.001
+  },
   "use_Adam": false,
   "use_LBFGS": false,
   "evaluate": false,

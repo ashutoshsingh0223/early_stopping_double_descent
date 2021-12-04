@@ -100,15 +100,28 @@ def main_worker(gpu, ngpus_per_node, args):
     else:
         raise ValueError('Incorrect optimizer selection {}'.format(args.opt))
 
+
     if args.initial_lr:
-        if isinstance(mode, torch.nn.DataParallel):
-            param_setup = [{'params': cur_lay.parameters()}
-                           for i, cur_lay in enumerate(model.module.modules())
-                           if 'weight' in dir(cur_lay)]
+        if isinstance(model, torch.nn.DataParallel):
+            param_setup = [
+                {'params': model.module.conv1.parameters()},
+                {'params': model.module.bn1.parameters()},
+                {'params': model.module.layer1.parameters()},
+                {'params': model.module.layer2.parameters()},
+                {'params': model.module.layer3.parameters()},
+                {'params': model.module.layer4.parameters()},
+                {'params': model.module.linear.parameters()},
+            ]
         else:
-            param_setup = [{'params': cur_lay.parameters()}
-                           for i, cur_lay in enumerate(model.modules())
-                           if 'weight' in dir(cur_lay)]
+            param_setup = [
+                {'params': model.conv1.parameters()},
+                {'params': model.bn1.parameters()},
+                {'params': model.layer1.parameters()},
+                {'params': model.layer2.parameters()},
+                {'params': model.layer3.parameters()},
+                {'params': model.layer4.parameters()},
+                {'params': model.linear.parameters()},
+            ]
 
         optimizer = torch.optim.SGD(param_setup, args.lr,
                                     momentum=args.momentum,
@@ -256,30 +269,14 @@ def main_worker(gpu, ngpus_per_node, args):
         save_config(args)
         return
 
-    # TODO: tracking weights of the model
+    # TODO: tracking weights of the model for resnet
     if args.track_weights:
-        if isinstance(model, torch.nn.DataParallel):
-            layer_idx = [i for i, cl in enumerate(model.module.modules()) if 'weight' in dir(cl)]
-        else:
-            layer_idx = [i for i, cl in enumerate(model.modules()) if 'weight' in dir(cl)]
+        raise ValueError('track_weights should be false for resnet')
 
-        cur_weights = get_weights(model, layer_idx)
-        if args.track_weights == 'filters':
-            filter_w_file = args.outpath / 'filter_weights.pickle'
-            filter_w_dict = {('layer_' + str(l)): [] for i, l in enumerate(layer_idx)
-                             if cur_weights[i].ndim > 2}
-        if args.track_weights == 'norm':
-            w_norm_dict = {('layer_' + str(l)): 0 for i, l in enumerate(layer_idx)
-                           if cur_weights[i].ndim > 1}
-
-    # TODO: scaling the weights of the model manually
+    # TODO: scaling the weights of the model manually. Not implementef for resnet
     if args.scale_weights:
-        scale_dict = {}
-        for cur_l, cur_w in enumerate(cur_weights):
-            if not (cur_w.ndim > 2):
-                continue
-            scale_dict['layer_' + str(layer_idx[cur_l])] = np.linalg.norm(cur_w.flatten()).item()
-        rescale_weights(model, scale_dict)
+        raise ValueError('scale_weights should be false for resnet')
+
 
     if args.scale_lr:
         if not args.opt.lower() == 'sgd':
@@ -287,36 +284,42 @@ def main_worker(gpu, ngpus_per_node, args):
         if isinstance(args.scale_lr, dict):
             opt_lr_dict = {k: v for k, v in args.scale_lr.items()}
         else:
-            scale_dict = {}
-            for cur_l, cur_w in enumerate(cur_weights):
-                if not (cur_w.ndim > 2):
-                    continue
-                scale_dict['layer_' + str(layer_idx[cur_l])] = np.linalg.norm(cur_w.flatten()).item()
+            raise ValueError('scale_lr must be a dict for resnet')
+            # scale_dict = {}
+            # for cur_l, cur_w in enumerate(cur_weights):
+            #     if not (cur_w.ndim > 2):
+            #         continue
+            #     scale_dict['layer_' + str(layer_idx[cur_l])] = np.linalg.norm(cur_w.flatten()).item()
+            #
+            # opt_lr_dict = get_lr_scales(model, args.lr, scale_dict)
 
-            opt_lr_dict = get_lr_scales(model, args.lr, scale_dict)
 
+        layer_names = ['conv1', 'bn1', 'layer1', 'layer2', 'layer3', 'layer4', 'linear']
         if isinstance(model, torch.nn.DataParallel):
-            param_setup = [{'params': cur_lay.parameters(), 'lr': opt_lr_dict[str(i)]}
-                           if (str(i) in opt_lr_dict)
-                           else {'params': cur_lay.parameters()}
-                           for i, cur_lay in enumerate(model.module.modules())
-                           if 'weight' in dir(cur_lay)]
-            args.initial_lr = [{'lr': opt_lr_dict[str(i)]}
-                               if (str(i) in opt_lr_dict)
-                               else {'lr': args.lr}
-                               for i, cur_lay in enumerate(model.module.modules())
-                               if 'weight' in dir(cur_lay)]
+            param_setup = [
+                {'params': model.module.conv1.parameters(), 'lr': args.lr},
+                {'params': model.module.bn1.parameters(), 'lr': args.lr},
+                {'params': model.module.layer1.parameters(), 'lr': args.lr},
+                {'params': model.module.layer2.parameters(), 'lr': args.lr},
+                {'params': model.module.layer3.parameters(), 'lr': opt_lr_dict['layer3']},
+                {'params': model.module.layer4.parameters(), 'lr':  opt_lr_dict['layer4']},
+                {'params': model.module.linear.parameters(), 'lr':  opt_lr_dict['linear']},
+            ]
         else:
-            param_setup = [{'params': cur_lay.parameters(), 'lr': opt_lr_dict[str(i)]}
-                           if (str(i) in opt_lr_dict)
-                           else {'params': cur_lay.parameters()}
-                           for i, cur_lay in enumerate(model.modules())
-                           if 'weight' in dir(cur_lay)]
-            args.initial_lr = [{'lr': opt_lr_dict[str(i)]}
-                               if (str(i) in opt_lr_dict)
-                               else {'lr': args.lr}
-                               for i, cur_lay in enumerate(model.modules())
-                               if 'weight' in dir(cur_lay)]
+            param_setup = [
+                {'params': model.conv1.parameters(), 'lr': args.lr},
+                {'params': model.bn1.parameters(), 'lr': args.lr},
+                {'params': model.layer1.parameters(), 'lr': args.lr},
+                {'params': model.layer2.parameters(), 'lr': args.lr},
+                {'params': model.layer3.parameters(), 'lr': opt_lr_dict['layer3']},
+                {'params': model.layer4.parameters(), 'lr': opt_lr_dict['layer4']},
+                {'params': model.linear.parameters(), 'lr': opt_lr_dict['linear']},
+            ]
+
+        args.initial_lr = [{'lr': opt_lr_dict[name_of_layer]}
+                           if (name_of_layer in opt_lr_dict)
+                           else {'lr': args.lr}
+                           for name_of_layer in layer_names]
 
         optimizer = torch.optim.SGD(param_setup, args.lr,
                                     momentum=args.momentum,
@@ -786,9 +789,11 @@ if __name__ == "__main__":
         if args.layer_names:
             args.model_config.update({'layer_names': args.layer_names})
     if isinstance(args.scale_lr, dict):
-        args.scale_lr = {'17': args.lr * args.scale_lr.get('17', 1)} if args.scale_lr else {}
-    elif isinstance(args.scale_lr, float):
-        args.scale_lr = {'17': args.lr * args.scale_lr}
+        args.scale_lr = {
+            "layer3": 0.05 * args.lr,
+            "layer4": 0.05 * args.lr,
+            "linear": 0.001 * args.lr}
+
 
     # rescale weights
     scale_weights = False
