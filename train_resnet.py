@@ -789,11 +789,7 @@ if __name__ == "__main__":
         if args.layer_names:
             args.model_config.update({'layer_names': args.layer_names})
     if isinstance(args.scale_lr, dict):
-        args.scale_lr = {
-            "layer3": 0.05 * args.lr,
-            "layer4": 0.05 * args.lr,
-            "linear": 0.001 * args.lr}
-
+        args.scale_lr = {k: v * args.lr for k,v in args.scale_lr.items()}
 
     # rescale weights
     scale_weights = False

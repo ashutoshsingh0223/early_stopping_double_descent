@@ -28,7 +28,7 @@
   "use_inverse_sqrt_lr": true,
   "scale_lr": {
     "layer3": 0.05,
-    "layer4": 0.05,
+    "layer4": 0.02,
     "linear": 0.001
   },
   "use_Adam": false,
