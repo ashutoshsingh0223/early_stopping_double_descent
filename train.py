@@ -101,7 +101,7 @@ def main_worker(gpu, ngpus_per_node, args):
         raise ValueError('Incorrect optimizer selection {}'.format(args.opt))
 
     if args.initial_lr:
-        if isinstance(mode, torch.nn.DataParallel):
+        if isinstance(model, torch.nn.DataParallel):
             param_setup = [{'params': cur_lay.parameters()}
                            for i, cur_lay in enumerate(model.module)
                            if 'weight' in dir(cur_lay)]
