@@ -28,35 +28,6 @@ class BasicBlock(nn.Module):
         return out
 
 
-# def get_basic_sequential(in_planes, planes, stride=1):
-#     expansion = 1
-#     if stride != 1 or in_planes != expansion * planes:
-#         basic_sequential = nn.Sequential(
-#             nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False),
-#             nn.BatchNorm2d(planes),
-#             nn.ReLU(),
-#             nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False),
-#             nn.BatchNorm2d(planes),
-#             nn.Sequential(
-#                 nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
-#                 nn.BatchNorm2d(self.expansion * planes)),
-#             nn.ReLU()
-#         )
-#     else:
-#         basic_sequential = nn.Sequential(
-#             nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False),
-#             nn.BatchNorm2d(planes),
-#             nn.ReLU(),
-#             nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False),
-#             nn.BatchNorm2d(planes),
-#             nn.Sequential(),
-#             nn.ReLU()
-#         )
-#     return basic_sequential
-
-
-
-
 class Bottleneck(nn.Module):
     expansion = 4
 
@@ -83,43 +54,6 @@ class Bottleneck(nn.Module):
         out += self.shortcut(x)
         out = F.relu(out)
         return out
-
-
-def get_bottleneck_sequential(in_planes, planes, stride=1):
-    expansion = 4
-    if stride != 1 or in_planes != expansion * planes:
-        bottleneck_sequential = nn.Sequential(
-            nn.Conv2d(in_planes, planes, kernel_size=1, bias=False),
-            nn.BatchNorm2d(planes),
-            nn.ReLU(),
-            nn.Conv2d(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False),
-            nn.BatchNorm2d(planes),
-            nn.ReLU(),
-            nn.Conv2d(planes, self.expansion * planes, kernel_size=1, bias=False),
-            nn.BatchNorm2d(self.expansion * planes),
-            nn.Sequential(
-                nn.Conv2d(in_planes, expansion * planes, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(expansion * planes)
-            ),
-            nn.ReLU()
-        )
-    else:
-        bottleneck_sequential = n.Sequential(
-            nn.Conv2d(in_planes, planes, kernel_size=1, bias=False),
-            nn.BatchNorm2d(planes),
-            nn.ReLU(),
-            nn.Conv2d(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False),
-            nn.BatchNorm2d(planes),
-            nn.ReLU(),
-            nn.Conv2d(planes, self.expansion * planes, kernel_size=1, bias=False),
-            nn.BatchNorm2d(self.expansion * planes),
-            nn.Sequential(
-                nn.Conv2d(in_planes, expansion * planes, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(expansion * planes)
-            ),
-            nn.ReLU()
-        )
-    return bottleneck_sequential
 
 
 class ResNet(nn.Module):
